@@ -1,0 +1,71 @@
+name: Build and Release AI Assistant
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Package Application
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Sync environment with uv
+        run: |
+          uv sync --all-extras --dev
+
+      - name: Build executable with PyInstaller
+        run: |
+          uv run pyinstaller jarvis.spec
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Package with Inno Setup
+        run: |
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" jarvis.iss
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AI-Assistant-Installer
+          path: |
+            dist/**/*.exe
+            Output/**/*.exe
+
+  release:
+    name: Publish to GitHub Releases
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: AI-Assistant-Installer
+          path: release_files
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: AI Assistant v${{ github.run_number }}
+          body: |
+            🚀 Automated release build for AI Assistant.
+            Built using PyInstaller and packaged via Inno Setup.
+          files: release_files/**/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
