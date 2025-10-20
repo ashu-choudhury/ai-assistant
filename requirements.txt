@@ -1,0 +1,14 @@
+googlesearch-python
+edge_tts
+keyboard
+pillow
+PyAudio
+PyAutoGUI
+pygame
+python-vlc
+requests
+SpeechRecognition
+wxPython
+BS4
+yt-dlp
+google-generativeai

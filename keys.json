@@ -1,0 +1,7 @@
+{
+	"gui": "ctrl+alt+i",
+	"voice": "ctrl+alt+v",
+	"quit": "ctrl+alt+q",
+	"screenshot": "ctrl+alt+x",
+	"interruption": "ctrl+shift"
+}
