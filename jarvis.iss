@@ -35,7 +35,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "dist\jarvis\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dist\jarvis\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "audio\*"; DestDir: "{app}\audio"; Flags: ignoreversion recursesubdirs 
+Source: "audios\*"; DestDir: "{app}\audio"; Flags: ignoreversion recursesubdirs 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
