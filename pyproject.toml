@@ -15,7 +15,7 @@
 [project]
 name = "homeassistant"
 version = "0.1.0"
-description = "Add your description here"
+description = "This project is an intelligent virtual assistant designed to streamline daily tasks through natural language interaction. It leverages advanced AI capabilities to understand user intent, respond conversationally, and execute a wide range of actions, from managing music playback to controlling the computer and accessing information online."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
