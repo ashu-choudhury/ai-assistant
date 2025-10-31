@@ -9,8 +9,6 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 name: Build and Release AI Assistant
 
@@ -22,6 +20,9 @@ on:
 
 permissions:
   contents: write
+
+env:
+  APP_VERSION: "1.2.0"  # your app version
 
 jobs:
   build:
@@ -41,27 +42,22 @@ jobs:
         run: pip install uv
 
       - name: Sync environment with uv
-        run: |
-          uv sync --all-extras --dev
+        run: uv sync --all-extras --dev
 
       - name: Build executable with PyInstaller
-        run: |
-          uv run pyinstaller jarvis.spec
+        run: uv run pyinstaller jarvis.spec
 
       - name: Install Inno Setup
         run: choco install innosetup --no-progress -y
 
       - name: Package with Inno Setup
-        run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "jarvis.iss"
+        run: & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "jarvis.iss"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: AI-Assistant-Installer
-          path: |
-            dist/**/*.exe
-            Output/**/*.exe
+          path: Output/Jarvis_installer.exe
 
   release:
     name: Publish to GitHub Releases
@@ -75,14 +71,16 @@ jobs:
           name: AI-Assistant-Installer
           path: release_files
 
+      - name: Get latest commit message
+        id: commit_msg
+        run: echo "COMMIT_MSG=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.run_number }}
-          name: AI Assistant v${{ github.run_number }}
-          body: |
-            🚀 Automated release build for AI Assistant.
-            Built using PyInstaller and packaged via Inno Setup.
-          files: release_files/**/*.exe
+          tag_name: v${{ env.APP_VERSION }}
+          name: Jarvis v${{ env.APP_VERSION }}
+          body: ${{ env.COMMIT_MSG }}
+          files: release_files/Jarvis_installer.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
